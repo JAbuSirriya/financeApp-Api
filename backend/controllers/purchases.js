@@ -1,12 +1,21 @@
 const express = require('express');
+const colors = require('colors');
 const router = express.Router();
+const Purchase = require('../models/Purchase')
 
-//index route
-router.get('/', (req, res) => res.send('index route'));
 
-//post route 
-router.post('/', (req, res) => {
-    res.send('post purchase')
+//index route (GET REQUEST)
+router.get('/', (req, res) => {
+    Purchase.find({}, (error, foundPurchases) => {
+        if (error) {
+            res.send(400).json({error: error.message})
+        } else {
+            res.send(200).json({
+                count: foundPurchases.length,
+                data: foundPurchases
+            })
+        }
+    })
 });
 
 
