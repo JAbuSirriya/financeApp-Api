@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const PurchaseSchema = new mongoose.Schema({
+const PurchaseSchema = new Schema({
     description: {
         type: String,
         required: [true, 'Add a description']
@@ -17,4 +17,4 @@ const PurchaseSchema = new mongoose.Schema({
 })
 
 const Purchase = mongoose.model('Purchase', PurchaseSchema);
-module.exports = Purchase
+module.exports = Purchase;

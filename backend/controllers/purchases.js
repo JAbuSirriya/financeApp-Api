@@ -8,9 +8,10 @@ const Purchase = require('../models/Purchase')
 router.get('/', (req, res) => {
     Purchase.find({}, (error, foundPurchases) => {
         if (error) {
-            res.send(400).json({error: error.message})
+            return res.status(400).json({error: error.message})
         } else {
-            res.send(200).json({
+            return res.status(200).json({
+                success: true,
                 count: foundPurchases.length,
                 data: foundPurchases
             })
@@ -18,10 +19,30 @@ router.get('/', (req, res) => {
     })
 });
 
+//post route
+router.post('/', (req, res) => {
+    console.log(req.body);
+    Purchase.create(req.body, (error, createdPurchase) => {
+        if (error.name === 'Purchase validation failed') {
+            console.log(error.name)
+            res.status(400).json({error: error.message});
+
+        } else {
+            res.status(200).json(createdPurchase)
+        }
+    })
+})
 
 //detete route
 router.delete('/:id', (req, res) => {
-    res.send('purchase deleted')
+    Purchase.findByIdAndDelete(req.params.id, (error, deletedPurchase) => {
+        if (error) {
+            res.status(400).json({error: error.message});
+        } else {
+            console.log(deletedPurchase)
+            res.status(200).json(deletedPurchase)
+        }
+    })
 });
 
 

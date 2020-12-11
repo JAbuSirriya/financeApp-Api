@@ -4,6 +4,7 @@ const colors = require('colors');
 const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 const app = express();
+app.use(express.json());
 
 //CONFIGURATIONS
 const port = process.env.PORT;
@@ -16,6 +17,7 @@ mongoose.connect(
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useFindAndModify: false,
+        useCreateIndex: true,
     }, 
     () => {
         console.log(`the connection with mongod is established at ${mongodbURI}`.brightMagenta)
