@@ -23,12 +23,13 @@ router.get('/', (req, res) => {
 router.post('/', (req, res) => {
     console.log(req.body);
     Purchase.create(req.body, (error, createdPurchase) => {
-        if (error.name === 'Purchase validation failed') {
+        // if (error.name === 'Purchase validation failed') {
+        if (error) {
             console.log(error.name)
             res.status(400).json({error: error.message});
 
         } else {
-            res.status(200).json(createdPurchase)
+            res.status(201).json(createdPurchase)
         }
     })
 })
