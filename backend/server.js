@@ -5,6 +5,9 @@ const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
 const cors = require('cors')
 const app = express();
+const purchases = require('./controllers/purchases');
+const accounts = require('./controllers/account');
+
 app.use(express.json());
 app.use(cors());
 
@@ -28,8 +31,9 @@ mongoose.connect(
 
 
 
-const purchases = require('./controllers/purchases');
-app.use('/purchases', purchases) 
+
+app.use('/purchases', purchases),
+app.use('/accounts', accounts);
 
 
 

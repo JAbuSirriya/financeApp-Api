@@ -1,7 +1,8 @@
 const express = require('express');
 const colors = require('colors');
 const router = express.Router();
-const Purchase = require('../models/Purchase')
+const Purchase = require('../models/Purchase');
+const Account = require('../models/Account')
 
 
 //index route (GET REQUEST)
@@ -29,6 +30,26 @@ router.post('/', (req, res) => {
             res.status(400).json({error: error.message});
 
         } else {
+            const sign = req.body.description.includes('bought') ? '-' : '+';
+            const amount = sign === "+" ? +req.body.amount : -req.body.amount;
+            const newAccData = {
+                "$inc": {
+                    "savingBalance": amount,
+                    "checkingBalance": amount,
+                    "cashOnHandBalance": amount
+                  },
+                  "$push": 
+                      sign === "+"  ? { "expenses": req.body} : {"income": req.body}
+                  }
+            };
+            Account.findOneAndUpdate({}, newAccData, { returnNewDocument: true }).then(updatedDocument => {
+                if(updatedDocument) {
+                  console.log(`Successfully updated document: ${updatedDocument}.`)
+                } else {
+                  console.log("No document matches the provided query.")
+                }
+                return updatedDocument
+              })
             res.status(201).json(createdPurchase)
         }
     })
