@@ -30,17 +30,22 @@ router.post('/', (req, res) => {
             res.status(400).json({error: error.message});
 
         } else {
-            const sign = req.body.description.includes('bought') ? '-' : '+';
-            const amount = sign === "+" ? +req.body.amount : -req.body.amount;
+            const isExpense = req.body.description.includes('bought');
+            
+            const amount = !isExpense ? +req.body.amount : -req.body.amount;
+            const expenseIncomePayload = isExpense ? {
+                "expenses": req.body,
+            }: {
+
+             "income": req.body,
+            }
             const newAccData = {
                 "$inc": {
                     "savingBalance": amount,
                     "checkingBalance": amount,
                     "cashOnHandBalance": amount
                   },
-                  "$push": 
-                      sign === "+"  ? { "expenses": req.body} : {"income": req.body}
-                  }
+                  "$push": expenseIncomePayload
             };
             Account.findOneAndUpdate({}, newAccData, { returnNewDocument: true }).then(updatedDocument => {
                 if(updatedDocument) {

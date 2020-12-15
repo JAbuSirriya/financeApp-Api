@@ -14,5 +14,15 @@ router.get('/', (_, res) => {
     })
 });
 
+router.post('/', (req, res) => {
+    Account.create(req.body, (error, accountData) => {
+        if (error) {
+            return res.status(400).json({message: error.message})
+        } else {
+            return res.status(201).json(accountData);
+        }
+    })
+});
+
 
 module.exports = router;
