@@ -10,6 +10,10 @@ const PurchaseSchema = new Schema({
         type: Number,
         required: [true, 'Add a number (example: +50 or -50)']
     },
+    accountType: {
+        type: String,
+        required: [true, 'Account Type is required']
+    },
     createdAt: {
         type: Date,
         default: Date.now

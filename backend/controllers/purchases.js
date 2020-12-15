@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 
 //post route
 router.post('/', (req, res) => {
-    console.log(req.body);
+    const { accountType } = req.body;
     Purchase.create(req.body, (error, createdPurchase) => {
         // if (error.name === 'Purchase validation failed') {
         if (error) {
@@ -38,13 +38,38 @@ router.post('/', (req, res) => {
             }: {
 
              "income": req.body,
+            };
+
+            let balanceAccount = {};
+
+            switch(accountType){
+                case 'checking': 
+                    balanceAccount ={
+                        
+                        "checkingBalance": amount,
+                        
+                      }
+                    break;
+                case 'saving':
+                    balanceAccount ={
+                        "savingBalance": amount,
+                        
+                    }
+                    break;
+                case 'cash':
+                    balanceAccount ={
+                        
+                        "cashOnHandBalance": amount
+                      }
+                    break;
+                default:
+                    // do nothing
+
+
+
             }
             const newAccData = {
-                "$inc": {
-                    "savingBalance": amount,
-                    "checkingBalance": amount,
-                    "cashOnHandBalance": amount
-                  },
+                "$inc": balanceAccount,
                   "$push": expenseIncomePayload
             };
             Account.findOneAndUpdate({}, newAccData, { returnNewDocument: true }).then(updatedDocument => {
