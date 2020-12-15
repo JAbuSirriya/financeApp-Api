@@ -16,6 +16,7 @@ const port = process.env.PORT;
 const mongodbURI = process.env.MONGO_URI;
 mongoose.connection;
 
+g
 //DATABASE //the second argument prevents a number of warnings in Mongoose
 mongoose.connect(
     mongodbURI, {
