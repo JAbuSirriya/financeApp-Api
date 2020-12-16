@@ -7,6 +7,7 @@ const cors = require('cors')
 const app = express();
 const purchases = require('./controllers/purchases');
 const accounts = require('./controllers/account');
+const users = require('./controllers/user');
 
 app.use(express.json());
 app.use(cors());
@@ -35,6 +36,7 @@ mongoose.connect(
 
 app.use('/purchases', purchases),
 app.use('/accounts', accounts);
+app.use('/users', users);
 
 
 
