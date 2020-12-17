@@ -3,7 +3,6 @@ const router = express.Router();
 const Account = require('../models/Account');
 const authMw = require('../middlewares/auth');
 
-
 //index route (GET REQUEST)
 router.get('/', authMw, (req, res) => {
     Account.findOne({
