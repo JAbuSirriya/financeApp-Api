@@ -6,9 +6,6 @@ const User = require('../models/User')
 const router = express.Router();
 const Account = require('../models/Account')
 
-
-
-
 router.get('/', (_, res) => {
 
     User.find({}, (error, userData) => {
