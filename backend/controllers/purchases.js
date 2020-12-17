@@ -2,12 +2,16 @@ const express = require('express');
 const colors = require('colors');
 const router = express.Router();
 const Purchase = require('../models/Purchase');
-const Account = require('../models/Account')
+const Account = require('../models/Account');
+const authMw = require('../middlewares/auth');
+const { Types } = require('mongoose');
 
 
 //index route (GET REQUEST)
-router.get('/', (req, res) => {
-    Purchase.find({}, (error, foundPurchases) => {
+router.get('/', authMw,  (req, res) => {
+    Purchase.find({
+        userId: req.user.id
+    }, (error, foundPurchases) => {
         if (error) {
             return res.status(400).json({error: error.message})
         } else {
@@ -21,9 +25,11 @@ router.get('/', (req, res) => {
 });
 
 //post route
-router.post('/', (req, res) => {
+router.post('/', authMw, (req, res) => {
+    const { id } = req.user;
+    console.log('user is', id);
     const { accountType } = req.body;
-    Purchase.create(req.body, (error, createdPurchase) => {
+    Purchase.create({...req.body, userId: Types.ObjectId(id)}, (error, createdPurchase) => {
         // if (error.name === 'Purchase validation failed') {
         if (error) {
             console.log(error.name)
@@ -72,7 +78,9 @@ router.post('/', (req, res) => {
                 "$inc": balanceAccount,
                   "$push": expenseIncomePayload
             };
-            Account.findOneAndUpdate({}, newAccData, { returnNewDocument: true }).then(updatedDocument => {
+            Account.findOneAndUpdate({
+                userId: id
+            }, newAccData, { returnNewDocument: true }).then(updatedDocument => {
                 if(updatedDocument) {
                   console.log(`Successfully updated document: ${updatedDocument}.`)
                 } else {

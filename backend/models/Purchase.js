@@ -14,6 +14,11 @@ const PurchaseSchema = new Schema({
         type: String,
         required: [true, 'Account Type is required']
     },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: [true,'User is required']
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -4,6 +4,7 @@ const { secretKey } = require('../config');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User')
 const router = express.Router();
+const Account = require('../models/Account')
 
 
 
@@ -36,7 +37,7 @@ router.post('/login', (req, res) => {
             if(!bcrypt.compareSync(req.body.password, user.password)) {
                 return res.status(400).send({ message: "The password is invalid" });
             }
-            const token = jwt.sign({ name: user.name }, secretKey);
+            const token = jwt.sign({ name: user.name, id: user._id }, secretKey);
             return res.status(200).json({
                 token
             });
@@ -50,12 +51,23 @@ router.post('/register', (req, res) => {
         password: bcrypt.hashSync(req.body.password, 10)
     }
 
-    User.create(payload, (error) => {
+    User.create(payload, (error, user) => {
         if (error) {
             console.error(error);
             return res.status(400).json({message: error.message})
         } else {
-            return res.status(201);
+            Account.create({
+                userId: user._id
+            }).then(() => {
+                const token = jwt.sign({ name: user.name, id: user._id }, secretKey);
+                return res.status(200).json({
+                    token
+                });
+            }).catch((err) => {
+                console.error(err);
+                return res.status(422).json({message: error.message});
+            })
+            
         }
     })
 });
