@@ -37,6 +37,9 @@ mongoose.connect(
 app.use('/purchases', purchases),
 app.use('/accounts', accounts);
 app.use('/users', users);
+app.use('/status', (_, res) => res.status(200).json({
+    status: 'ok'
+}))
 
 
 
